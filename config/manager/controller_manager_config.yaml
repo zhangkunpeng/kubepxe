@@ -8,4 +8,4 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 5d2823cd.kubepxe.com
+  resourceName: 5d2823cd.kumple.com

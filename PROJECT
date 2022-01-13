@@ -1,6 +1,16 @@
-domain: kubepxe.com
+domain: kumple.com
 layout:
 - go.kubebuilder.io/v3
 projectName: kubepxe
 repo: github.com/zhangkunpeng/kubepxe
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kumple.com
+  group: pxe
+  kind: DynamicHostConfiguration
+  path: github.com/zhangkunpeng/kubepxe/api/v1
+  version: v1
 version: "3"

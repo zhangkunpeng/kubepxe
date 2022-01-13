@@ -1,0 +1,34 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations/status
+  verbs:
+  - get
+  - patch
+  - update

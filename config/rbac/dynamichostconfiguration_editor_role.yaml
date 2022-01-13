@@ -1,0 +1,24 @@
+# permissions for end users to edit dynamichostconfigurations.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dynamichostconfiguration-editor-role
+rules:
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations/status
+  verbs:
+  - get

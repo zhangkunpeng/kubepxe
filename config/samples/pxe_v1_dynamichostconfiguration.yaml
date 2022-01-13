@@ -1,0 +1,6 @@
+apiVersion: pxe.kumple.com/v1
+kind: DynamicHostConfiguration
+metadata:
+  name: dynamichostconfiguration-sample
+spec:
+  # TODO(user): Add fields here

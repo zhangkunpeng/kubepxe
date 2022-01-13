@@ -1,0 +1,20 @@
+# permissions for end users to view dynamichostconfigurations.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dynamichostconfiguration-viewer-role
+rules:
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - dynamichostconfigurations/status
+  verbs:
+  - get
