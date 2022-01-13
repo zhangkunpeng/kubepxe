@@ -1,0 +1,6 @@
+domain: kubepxe.com
+layout:
+- go.kubebuilder.io/v3
+projectName: kubepxe
+repo: github.com/zhangkunpeng/kubepxe
+version: "3"
