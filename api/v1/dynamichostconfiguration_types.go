@@ -23,21 +23,41 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type AddressRange struct {
+	Start string `json:"start"`
+	End   string `json:"end"`
+	Mask  string `json:"mask,omitempty"`
+}
+
+type Bind struct {
+	Address   string `json:"address,omitempty"`
+	Port      int    `json:"port,omitempty"`
+	Interface string `json:"interface,omitempty"`
+}
+
 // DynamicHostConfigurationSpec defines the desired state of DynamicHostConfiguration
 type DynamicHostConfigurationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of DynamicHostConfiguration. Edit dynamichostconfiguration_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// +kubebuilder:validation:Enum=4;6
+	ProtocolVersion int            `json:"protocolVersion"`
+	Listen          []Bind         `json:"listen"`
+	Range           []AddressRange `json:"range"`
+	Router          string         `json:"router,omitempty"`
+	Lease           int            `json:"lease,omitempty"`
 }
 
 // DynamicHostConfigurationStatus defines the observed state of DynamicHostConfiguration
 type DynamicHostConfigurationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	State string `json:"state,omitempty"`
 }
 
+// +kubebuilder:printcolumn:JSONPath=".status.state",name=Status,type=string
+// +kubebuilder:printcolumn:JSONPath=".metadata.creationTimestamp",name=Age,type=date
+// +kubebuilder:resource:categories=pxe,shortName=dhcp,scope=Namespaced
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 

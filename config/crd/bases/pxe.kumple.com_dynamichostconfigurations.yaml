@@ -10,13 +10,24 @@ metadata:
 spec:
   group: pxe.kumple.com
   names:
+    categories:
+    - pxe
     kind: DynamicHostConfiguration
     listKind: DynamicHostConfigurationList
     plural: dynamichostconfigurations
+    shortNames:
+    - dhcp
     singular: dynamichostconfiguration
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .status.state
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1
     schema:
       openAPIV3Schema:
         description: DynamicHostConfiguration is the Schema for the dynamichostconfigurations
@@ -38,14 +49,54 @@ spec:
             description: DynamicHostConfigurationSpec defines the desired state of
               DynamicHostConfiguration
             properties:
-              foo:
-                description: Foo is an example field of DynamicHostConfiguration.
-                  Edit dynamichostconfiguration_types.go to remove/update
+              lease:
+                type: integer
+              listen:
+                items:
+                  properties:
+                    address:
+                      type: string
+                    interface:
+                      type: string
+                    port:
+                      type: integer
+                  type: object
+                type: array
+              protocolVersion:
+                enum:
+                - 4
+                - 6
+                type: integer
+              range:
+                items:
+                  properties:
+                    end:
+                      type: string
+                    mask:
+                      type: string
+                    start:
+                      type: string
+                  required:
+                  - end
+                  - start
+                  type: object
+                type: array
+              router:
                 type: string
+            required:
+            - listen
+            - protocolVersion
+            - range
             type: object
           status:
             description: DynamicHostConfigurationStatus defines the observed state
               of DynamicHostConfiguration
+            properties:
+              state:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: string
             type: object
         type: object
     served: true
