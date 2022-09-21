@@ -1,0 +1,9 @@
+apiVersion: pxe.kumple.com/v1
+kind: IPAddress
+metadata:
+  name: ipaddress-sample
+  labels:
+    test: enabled
+spec:
+  # TODO(user): Add fields here
+

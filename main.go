@@ -18,8 +18,12 @@ package main
 
 import (
 	"flag"
+	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/klog/v2"
 	"os"
-
+	"runtime/trace"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -52,8 +56,8 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
-	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
-	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
+	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8084", "The address the metric endpoint binds to.")
+	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8085", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
@@ -61,9 +65,20 @@ func main() {
 		Development: true,
 	}
 	opts.BindFlags(flag.CommandLine)
+	klog.InitFlags(nil)
 	flag.Parse()
-
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	f, _ := os.Create("trace.out")
+	defer f.Close()
+	trace.Start(f)
+	defer trace.Stop()
+
+	sbo := cache.SelectorsByObject{
+		&pxev1.IPAddress{}: {
+			Label: labels.Set(map[string]string{"test": "enabled"}).AsSelector(),
+			Field: fields.Set(map[string]string{"metadata.name": "ipaddress-sample"}).AsSelector(),
+		},
+	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
@@ -72,6 +87,7 @@ func main() {
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "5d2823cd.kumple.com",
+		NewCache:               cache.BuilderWithOptions(cache.Options{SelectorsByObject: sbo}),
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -83,6 +99,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DynamicHostConfiguration")
+		os.Exit(1)
+	}
+	if err = (&controllers.IPAddressReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "IPAddress")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

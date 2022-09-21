@@ -32,3 +32,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - ipaddresses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - ipaddresses/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - ipaddresses/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -13,4 +13,22 @@ resources:
   kind: DynamicHostConfiguration
   path: github.com/zhangkunpeng/kubepxe/api/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kumple.com
+  group: pxe
+  kind: DynamicIPAddress
+  path: github.com/zhangkunpeng/kubepxe/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kumple.com
+  group: pxe
+  kind: IPAddress
+  path: github.com/zhangkunpeng/kubepxe/api/v1
+  version: v1
 version: "3"

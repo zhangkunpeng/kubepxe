@@ -1,0 +1,20 @@
+# permissions for end users to view ipaddresses.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ipaddress-viewer-role
+rules:
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - ipaddresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pxe.kumple.com
+  resources:
+  - ipaddresses/status
+  verbs:
+  - get
